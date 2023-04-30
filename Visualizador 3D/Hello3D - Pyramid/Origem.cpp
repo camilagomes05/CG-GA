@@ -63,7 +63,9 @@ struct Vertex
 };
 
 bool rotateX = false, rotateY = false, rotateZ = false;
-glm::vec3 cameraPos = glm::vec3(0.0, 0.0, 3.0);
+bool translateF = false, translateG = false, translateH = false;
+
+glm::vec3 cameraPos = glm::vec3(0.0, 2.0, 8.0);
 glm::vec3 cameraFront = glm::vec3(0.0, 0.0, -1.0);
 glm::vec3 cameraUp = glm::vec3(0.0, 1.0, 0.0);
 
@@ -169,9 +171,11 @@ int main()
 	shader.setVec3("lightPos", 10, 5, 0);
 	shader.setVec3("lightColor", 5.0f, 5.0f, 5.0f);
 
-	
+
 	int nVerts;
 	GLuint VAO = loadOBJ("../Pikachu.obj", nVerts);
+	GLuint VAO2 = loadOBJ("../Pikachu.obj", nVerts);
+
 
 	int i = 0;
 
@@ -179,9 +183,9 @@ int main()
 
 	//mandar cor pro shader
 	desenho[0].initialize(VAO, nVerts, &shader);
-	desenho[1].initialize(VAO, nVerts, &shader, glm::vec3(3.0, 0, 0.0));
+	desenho[1].initialize(VAO2, nVerts, &shader, glm::vec3(3.0, 0, 0.0));
 
-	
+
 	glEnable(GL_DEPTH_TEST);
 
 	float light_y = -10;
@@ -200,61 +204,50 @@ int main()
 		glLineWidth(5);
 		glPointSize(0);
 
-		float xRotation = 0.0;
-		float yRotation = 0.0;
-		float zRotation = 0.0;
 
-		
 		if (light_x > 10) {
 			speed *= -1;
-		} else if (light_x < -10) {
+		}
+		else if (light_x < -10) {
 			speed *= -1;
 		}
-		
+
 		light_x += speed;
 		light_y = sqrt(-(light_x * light_x) + 100);
 
 		if (speed < 0) {
 			light_y *= -1;
 		}
-		
-		
+
+
 		shader.setVec3("lightPos", light_x, light_y, 0);
 
 
-		if (rotateX)
-		{
-			xRotation = speed;
-
-		}
-		else {
-			xRotation = 0.0;
-		}
-		if (rotateY)
-		{
-			yRotation = speed;
-
-		}
-		else {
-			yRotation = 0.0;
-		}
-		if (rotateZ)
-		{
-			zRotation = speed;
-
-		}
-		else {
-			zRotation = 0.0;
-		}
-
-		
 		float angle = (GLfloat)glfwGetTime() * 2;
 
 		int i = 0;
 
-		while (i <= 3) {
+		while (i <= 2) {
 			if (opcao[i] == 7) {
 
+				//Translação
+				if (translateF) {
+
+					desenho[0].initialize(VAO, nVerts, &shader, glm::vec3(1.0, 0.0, 0.0));
+					i++;
+				}
+				else if (translateG)
+				{
+					desenho[0].initialize(VAO, nVerts, &shader, glm::vec3(0.0, 1.0, 0.0));
+					i++;
+				}
+				else if (translateH)
+				{
+					desenho[0].initialize(VAO, nVerts, &shader, glm::vec3(0.0, 0.0, 1.0));
+					i++;
+				}
+
+				//Rotação
 				if (rotateX) {
 
 					desenho[0].initialize(VAO, nVerts, &shader, glm::vec3(0.0, 0.0, 0.0), glm::vec3(1.0, 1.0, 1.0), angle, glm::vec3(1.0f, 0.0f, 0.0f));
@@ -274,21 +267,42 @@ int main()
 
 			else if (opcao[i] == 8) {
 
+				//Translação
+				if (translateF)
+				{
+					desenho[1].initialize(VAO2, nVerts, &shader, glm::vec3(3.0, 0.0, 0.0));
+					i++;
+				}
+
+				else if (translateG)
+				{
+					desenho[1].initialize(VAO2, nVerts, &shader, glm::vec3(0.0, 3.0, 0.0));
+					i++;
+				}
+
+				else if (translateH)
+				{
+					desenho[1].initialize(VAO2, nVerts, &shader, glm::vec3(0.0, 0.0, 3.0));
+					i++;
+				}
+
+
+				//Rotação
 				if (rotateX)
 				{
-					desenho[1].initialize(VAO, nVerts, &shader, glm::vec3(3.0, 0.0, 0.0), glm::vec3(1.0, 1.0, 1.0), angle, glm::vec3(1.0f, 0.0f, 0.0f));
+					desenho[1].initialize(VAO2, nVerts, &shader, glm::vec3(3.0, 0.0, 0.0), glm::vec3(1.0, 1.0, 1.0), angle, glm::vec3(1.0f, 0.0f, 0.0f));
 					i++;
 				}
 
 				else if (rotateY)
 				{
-					desenho[1].initialize(VAO, nVerts, &shader, glm::vec3(3.0, 0.0, 0.0), glm::vec3(1.0, 1.0, 1.0), angle, glm::vec3(0.0f, 1.0f, 0.0f));
+					desenho[1].initialize(VAO2, nVerts, &shader, glm::vec3(3.0, 0.0, 0.0), glm::vec3(1.0, 1.0, 1.0), angle, glm::vec3(0.0f, 1.0f, 0.0f));
 					i++;
 				}
 
 				else if (rotateZ)
 				{
-					desenho[1].initialize(VAO, nVerts, &shader, glm::vec3(3.0, 0.0, 0.0), glm::vec3(1.0, 1.0, 1.0), angle, glm::vec3(0.0f, 0.0f, 1.0f));
+					desenho[1].initialize(VAO2, nVerts, &shader, glm::vec3(3.0, 0.0, 0.0), glm::vec3(1.0, 1.0, 1.0), angle, glm::vec3(0.0f, 0.0f, 1.0f));
 					i++;
 				}
 			}
@@ -302,7 +316,7 @@ int main()
 
 		glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 		glUniformMatrix4fv(viewLoc, 1, FALSE, glm::value_ptr(view));
-		
+
 
 		glm::mat4 projection = glm::perspective(glm::radians(fov), (GLfloat)width / (GLfloat)height, 0.1f, 100.0f);
 		glUniformMatrix4fv(projLoc, 1, FALSE, glm::value_ptr(projection));
@@ -356,20 +370,6 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		speed -= 0.1;
 	}
 
-	if (key == GLFW_KEY_Y && action == GLFW_PRESS)
-	{
-		rotateX = false;
-		rotateY = true;
-		rotateZ = false;
-	}
-
-	if (key == GLFW_KEY_Z && action == GLFW_PRESS)
-	{
-		rotateX = false;
-		rotateY = false;
-		rotateZ = true;
-	}
-
 	if (key == GLFW_KEY_X && action == GLFW_PRESS)
 	{
 		rotateX = true;
@@ -389,6 +389,28 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		rotateX = false;
 		rotateY = false;
 		rotateZ = true;
+	}
+
+
+	if (key == GLFW_KEY_F && action == GLFW_PRESS)
+	{
+		translateF = true;
+		translateG = false;
+		translateH = false;
+	}
+
+	if (key == GLFW_KEY_G && action == GLFW_PRESS)
+	{
+		translateF = false;
+		translateG = true;
+		translateH = false;
+	}
+
+	if (key == GLFW_KEY_H && action == GLFW_PRESS)
+	{
+		translateF = false;
+		translateG = false;
+		translateH = true;
 	}
 
 	if (key == GLFW_KEY_W)
@@ -412,7 +434,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	}
 
 	//visão superior
-	if (key == GLFW_KEY_1) 
+	if (key == GLFW_KEY_1)
 	{
 		cameraPos = glm::vec3(0.0, 5.0, 0.0);
 		cameraUp = glm::vec3(0.0, 1.0, 0.0);
