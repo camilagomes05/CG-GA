@@ -1,9 +1,9 @@
-/* Hello Triangle - cÛdigo adaptado de https://learnopengl.com/#!Getting-started/Hello-Triangle
+/* Hello Triangle - c√≥digo adaptado de https://learnopengl.com/#!Getting-started/Hello-Triangle
  *
  * Adaptado por Rossana Baptista Queiroz
- * para a disciplina de Processamento Gr·fico/ComputaÁ„o Gr·fica - Unisinos
- * Vers„o inicial: 7/4/2017
- * ⁄ltima atualizaÁ„o em 01/03/2023
+ * para a disciplina de Processamento Gr√°fico/Computa√ß√£o Gr√°fica - Unisinos
+ * Vers√£o inicial: 7/4/2017
+ * √öltima atualiza√ß√£o em 01/03/2023
  *
  */
 
@@ -30,7 +30,7 @@ using namespace std;
 #include "Shader.h"
 #include "Mesh.h"
 
-// ProtÛtipo da funÁ„o de callback de teclado
+// Prot√≥tipo da fun√ß√£o de callback de teclado
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
 
 // mouse callback
@@ -39,15 +39,15 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 // scroll callback
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 
-// ProtÛtipos das funÁıes
+// Prot√≥tipos das fun√ß√µes
 int setupShader();
 int loadOBJ(string filepath, int& nVerts);
 
-// Dimensıes da janela (pode ser alterado em tempo de execuÁ„o)
+// Dimens√µes da janela (pode ser alterado em tempo de execu√ß√£o)
 const GLuint WIDTH = 600, HEIGHT = 600;
 
 
-//CÛdifo fonte do Fragment Shader (em GLSL): ainda hardcoded
+//C√≥difo fonte do Fragment Shader (em GLSL): ainda hardcoded
 const GLchar* fragmentShaderSource = "#version 450\n"
 "in vec4 finalColor;\n"
 "out vec4 color;\n"
@@ -80,15 +80,15 @@ vector <GLuint> indices;
 vector <glm::vec3> normals;
 vector <glm::vec2> texCoord;
 
-// FunÁ„o MAIN
+// Fun√ß√£o MAIN
 int main()
 {
-	// InicializaÁ„o da GLFW
+	// Inicializa√ß√£o da GLFW
 	glfwInit();
 
-	//Muita atenÁ„o aqui: alguns ambientes n„o aceitam essas configuraÁıes
-	//VocÍ deve adaptar para a vers„o do OpenGL suportada por sua placa
-	//Sugest„o: comente essas linhas de cÛdigo para desobrir a vers„o e
+	//Muita aten√ß√£o aqui: alguns ambientes n√£o aceitam essas configura√ß√µes
+	//Voc√™ deve adaptar para a vers√£o do OpenGL suportada por sua placa
+	//Sugest√£o: comente essas linhas de c√≥digo para desobrir a vers√£o e
 	//depois atualize (por exemplo: 4.5 com 4 e 5)
 	//glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	//glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
@@ -99,11 +99,11 @@ int main()
 	//	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	//#endif
 
-	// CriaÁ„o da janela GLFW
+	// Cria√ß√£o da janela GLFW
 	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Visualizador 3D", nullptr, nullptr);
 	glfwMakeContextCurrent(window);
 
-	// Fazendo o registro da funÁ„o de callback para a janela GLFW
+	// Fazendo o registro da fun√ß√£o de callback para a janela GLFW
 	glfwSetKeyCallback(window, key_callback);
 
 	//callback do mouse
@@ -115,20 +115,20 @@ int main()
 	//desabilitando cursor mouse
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-	// GLAD: carrega todos os ponteiros d funÁıes da OpenGL
+	// GLAD: carrega todos os ponteiros d fun√ß√µes da OpenGL
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 	{
 		std::cout << "Failed to initialize GLAD" << std::endl;
 
 	}
 
-	// Obtendo as informaÁıes de vers„o
+	// Obtendo as informa√ß√µes de vers√£o
 	const GLubyte* renderer = glGetString(GL_RENDERER); /* get renderer string */
 	const GLubyte* version = glGetString(GL_VERSION); /* version as a string */
 	cout << "Renderer: " << renderer << endl;
 	cout << "OpenGL version supported " << version << endl;
 
-	// Definindo as dimensıes da viewport com as mesmas dimensıes da janela da aplicaÁ„o
+	// Definindo as dimens√µes da viewport com as mesmas dimens√µes da janela da aplica√ß√£o
 	int width, height;
 	glfwGetFramebufferSize(window, &width, &height);
 	glViewport(0, 0, width, height);
@@ -143,12 +143,12 @@ int main()
 	model = glm::rotate(model, /*(GLfloat)glfwGetTime()*/glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 	glUniformMatrix4fv(modelLoc, 1, FALSE, glm::value_ptr(model));
 
-	//Definindo a matriz de view (posiÁ„o e orientaÁ„o da c‚mera)
+	//Definindo a matriz de view (posi√ß√£o e orienta√ß√£o da c√¢mera)
 	glm::mat4 view = glm::lookAt(glm::vec3(0.0, 0.0, 3.0), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
 	GLint viewLoc = glGetUniformLocation(shader.ID, "view");
 	glUniformMatrix4fv(viewLoc, 1, FALSE, glm::value_ptr(view));
 
-	//Definindo a matriz de projeÁ„o perpectiva
+	//Definindo a matriz de proje√ß√£o perpectiva
 	glm::mat4 projection = glm::perspective(glm::radians(fov), (GLfloat)width / (GLfloat)height, 0.1f, 100.0f);
 	GLint projLoc = glGetUniformLocation(shader.ID, "projection");
 	glUniformMatrix4fv(projLoc, 1, FALSE, glm::value_ptr(projection));
@@ -187,10 +187,10 @@ int main()
 	float light_y = -10;
 	float light_x = -10;
 
-	// Loop da aplicaÁ„o - "game loop"
+	// Loop da aplica√ß√£o - "game loop"
 	while (!glfwWindowShouldClose(window))
 	{
-		// Checa se houveram eventos de input (key pressed, mouse moved etc.) e chama as funÁıes de callback correspondentes
+		// Checa se houveram eventos de input (key pressed, mouse moved etc.) e chama as fun√ß√µes de callback correspondentes
 		glfwPollEvents();
 
 		// Limpa o buffer de cor
@@ -248,7 +248,7 @@ int main()
 		}
 
 		
-		float angle = (GLfloat)glfwGetTime();
+		float angle = (GLfloat)glfwGetTime() * 2;
 
 		int i = 0;
 
@@ -333,13 +333,13 @@ int main()
 	}
 	// Pede pra OpenGL desalocar os buffers
 	glDeleteVertexArrays(1, &VAO);
-	// Finaliza a execuÁ„o da GLFW, limpando os recursos alocados por ela
+	// Finaliza a execu√ß√£o da GLFW, limpando os recursos alocados por ela
 	glfwTerminate();
 	return 0;
 }
 
-// FunÁ„o de callback de teclado - sÛ pode ter uma inst‚ncia (deve ser est·tica se
-// estiver dentro de uma classe) - … chamada sempre que uma tecla for pressionada
+// Fun√ß√£o de callback de teclado - s√≥ pode ter uma inst√¢ncia (deve ser est√°tica se
+// estiver dentro de uma classe) - √â chamada sempre que uma tecla for pressionada
 // ou solta via GLFW
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode)
 {
@@ -411,7 +411,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * float(0.1);
 	}
 
-	//vis„o superior
+	//vis√£o superior
 	if (key == GLFW_KEY_1) 
 	{
 		cameraPos = glm::vec3(0.0, 5.0, 0.0);
@@ -419,7 +419,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		cameraFront = glm::vec3(0.00108709, -0.999701, 0.02441);
 	}
 
-	//vis„o de frente
+	//vis√£o de frente
 	if (key == GLFW_KEY_2)
 	{
 		cameraPos = glm::vec3(0.0, 0.0, 3.0);
@@ -427,7 +427,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		cameraFront = glm::vec3(-0.0235599, -0.00523596, -0.999709);
 	}
 
-	//vis„o direita
+	//vis√£o direita
 	if (key == GLFW_KEY_3)
 	{
 		cameraPos = glm::vec3(3.0, 0.0, 0.0);
@@ -435,7 +435,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		cameraFront = glm::vec3(-0.99, -0.00523596, 0.062);
 	}
 
-	//vis„o traseira
+	//vis√£o traseira
 	if (key == GLFW_KEY_4)
 	{
 		cameraPos = glm::vec3(0.0, 0.0, -3.0);
@@ -443,7 +443,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		cameraFront = glm::vec3(-0.006, -0.007, 0.99);
 	}
 
-	//vis„o esquerda
+	//vis√£o esquerda
 	if (key == GLFW_KEY_5)
 	{
 		cameraPos = glm::vec3(-3.0, 0.0, 0.0);
@@ -451,7 +451,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		cameraFront = glm::vec3(0.99, -0.02, -0.03);
 	}
 
-	//vis„o de baixo (sÛ da pra ver o ch„o)
+	//vis√£o de baixo (s√≥ da pra ver o ch√£o)
 	if (key == GLFW_KEY_6)
 	{
 		cameraPos = glm::vec3(0.0, -5.0, 0.0);
@@ -513,11 +513,11 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 }
 
 
-// Esta funÁ„o est· bastante harcoded - objetivo È criar os buffers que armazenam a 
-// geometria de um tri‚ngulo
-// Apenas atributo coordenada nos vÈrtices
+// Esta fun√ß√£o est√° bastante harcoded - objetivo √© criar os buffers que armazenam a 
+// geometria de um tri√¢ngulo
+// Apenas atributo coordenada nos v√©rtices
 // 1 VBO com as coordenadas, VAO com apenas 1 ponteiro para atributo
-// A funÁ„o retorna o identificador do VAO
+// A fun√ß√£o retorna o identificador do VAO
 
 int loadOBJ(string filePath, int& nVerts)
 {
